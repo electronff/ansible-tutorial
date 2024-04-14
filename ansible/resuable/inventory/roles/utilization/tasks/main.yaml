@@ -1,0 +1,27 @@
+---
+- name: check memory utilzation
+  ansible.builtin.shell: free -h
+  register: cpu_output
+
+- name : check cpu utization
+  ansible.builtin.shell: top -n 1 -b
+  register: memory_output
+
+- name : check disk utilization
+  ansible.builtin.shell: df -h
+  register: disk_output
+
+- name: save all the ouputs to a flle
+  blockinfile:
+    path: /tmp/utilization_info.txt
+    create: yes
+    block: |
+      memory: {{ memory_output.stdout }}
+      cpu: {{ cpu_output.stdout }}
+      disk: {{ disk_output.stdout }}
+  become: yes
+
+- name: copy the file to the ansible controller
+  ansible.builtin.fetch:
+    src: /tmp/utilization_info.txt
+    dest: /tmp/inventory_files/

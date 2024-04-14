@@ -1,0 +1,42 @@
+---
+- name: Ensure net-tools pakage is installed
+  ansible.builtin.package:
+    name: net-tools
+    state: present
+  become: yes
+
+- name: get hostname
+  command: hostname
+  register: hostname_output
+  
+- name: get ip address
+  command: ip a   
+  register: ip_output   
+
+- name: get ip route
+  command: route -n
+  register: ip_route_output 
+
+- name: run netstat
+  command: netstat -tuln
+  register: netstat_output
+
+- name: run runlevel
+  command: runlevel
+  register: runlevel_output
+
+- name: save all the ouputs to a flle
+  blockinfile:
+    path: /tmp/networking_info.txt
+    block: |
+      hostname: {{ hostname_output.stdout }}
+      ip address: {{ ip_output.stdout }}
+      ip route: {{ ip_route_output.stdout }}
+      netstat: {{ netstat_output.stdout }}
+      runlevel: {{ runlevel_output.stdout }}
+  become: yes
+
+- name: copy the file to the ansible controller
+  ansible.builtin.fetch:
+    src: /tmp/networking_info.txt
+    dest: /tmp/inventory_files/
