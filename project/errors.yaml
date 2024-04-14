@@ -1,0 +1,63 @@
+---
+# Playbook: Error Handling Examples
+# This playbook demonstrates various error handling techniques, including:
+
+# Ignoring errors with ignore_errors: yes
+# Handling errors with failed_when condition
+# Recovering from errors with rescue block
+# Retrying tasks with retries and until condition
+# Running tasks regardless of the result with always handler.
+# Description: This playbook demonstrates various error handling scenarios in Ansible using tasks.
+
+# Play-level options:
+- name: Error Handling Examples  # Name of the playbook
+  hosts: localhost  # Specifies the host where the tasks should run.
+  gather_facts: no  # Disable gathering facts to improve playbook execution speed.
+
+  tasks:
+    # - name: Task with no error
+    #   debug:  # Debug module to print a message
+    #     msg: "This task runs without errors"
+
+    # - name: Task with failed result
+    #   command: /nonexistent_command  # Execute a command that doesn't exist to intentionally fail the task
+    #   ignore_errors: no  # Ignore errors to prevent the playbook from failing
+    #   register: command_result  # Register the result of the command execution
+    #   # msg: "{{ command_result }}"  # Print the result of the command execution
+
+    - name: Task with failed_when condition
+      shell: echo "Error occurred" >&2 && exit 1  # Simulate a command that fails with an error message
+      register: shell_result  # Register the result of the shell command execution
+      failed_when: shell_result.rc != 0  # Mark the task as failed if the shell command returns a non-zero exit code
+
+    # - name: Task with rescue block for error recovery
+    #   block:  # Block structure to group tasks
+    #     - name: Attempt to execute a nonexistent command
+    #       command: nonexistent_command  # Attempt to execute a nonexistent command to trigger an error
+    #       register: rescue_result  # Register the result of the command execution
+    #       ignore_errors: yes  # Ignore errors to prevent the playbook from failing
+
+    #   rescue:  # Rescue block to handle errors and recover gracefully
+    #     - debug:  # Debug module to print a message
+    #         msg: "An error occurred, but it was handled gracefully"
+
+    # - name: Task with block containing retries
+    #   block:  # Block structure to group tasks
+    #     - name: Attempt a task with retries
+    #       command: echo "Attempt {{ item }}" && ((RANDOM % 2)) && exit 0 || exit 1  # Simulate a command that fails randomly
+    #       loop: "{{ range(1, 6) | list }}"  # Retry the command 5 times
+    #       register: retry_result  # Register the result of the command execution
+    #       retries: 5  # Number of retry attempts
+    #       delay: 5  # Delay between retry attempts (in seconds)
+    #       until: retry_result is success  # Retry until the command succeeds
+
+    # - name: Task with block containing always handlers
+    #   block:  # Block structure to group tasks
+    #     - name: Task with always handlers
+    #       debug:  # Debug module to print a message
+    #         msg: "This task always runs, regardless of the result"
+
+    #   always:  # Always handler to execute tasks regardless of the task result
+    #     - debug:  # Debug module to print a message
+    #         msg: "This message is printed even if the task fails"
+

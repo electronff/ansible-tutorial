@@ -1,0 +1,38 @@
+# nginx.conf.j2 - Nginx configuration template
+
+# Global settings
+user www-data;
+worker_processes auto;
+pid /run/nginx.pid;
+
+events {
+    worker_connections 768;
+    # Other event configurations...
+}
+
+http {
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
+
+    # Logging settings
+    access_log /var/log/nginx/access.log;
+    error_log /var/log/nginx/error.log;
+
+    # Other HTTP server configurations...
+    
+    # Server block for HTTP
+    server {
+        listen {{ nginx_port }};  # Use the nginx_port variable defined in the playbook
+        server_name _;
+
+        # Location block for serving static files
+        location / {
+            root /usr/share/nginx/html;
+            index index.html index.htm;
+        }
+
+        # Other location blocks...
+    }
+
+    # Other server blocks...
+}

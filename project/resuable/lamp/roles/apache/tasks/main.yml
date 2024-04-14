@@ -1,0 +1,18 @@
+---
+# tasks file for lamp
+- name: Install Apache
+  ansible.builtin.package:
+    name: apache2
+    state: present
+
+- name: Copy Apache virtual host configuration
+  ansible.builtin.template:
+    src: virtualhost.conf.j2
+    dest: /etc/apache2/sites-available/000-default.conf
+  notify: restart apache
+
+- name: Enable Apache mod_rewrite
+  ansible.builtin.apache2_module:
+    name: rewrite
+    state: present
+

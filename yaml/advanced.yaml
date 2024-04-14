@@ -1,0 +1,107 @@
+- name: Advanced YAML Features
+  hosts: localhost
+  connection: local
+  gather_facts: no
+
+ # Anchors and Aliases Example
+  # Anchors and aliases allow you to reuse data within a YAML file.
+  # An anchor is defined using an ampersand (&) followed by a unique name,
+  # and an alias is created using an asterisk (*) followed by the anchor name.
+
+  tasks:
+    - name: Define Person and Employee
+      ansible.builtin.set_fact:
+        person: &person_anchor
+          name: John Doe
+          age: 30
+        employee:
+          <<: *person_anchor
+          department: Sales
+
+ # Merge Keys Example
+# Merge keys allow you to combine multiple mappings into a single mapping.
+# The merge key (<<) is used to include the key-value pairs from another mapping.
+
+    - name: "Merge Keys"
+      ansible.builtin.debug:
+        msg: |
+          person:
+            <<: *person_anchor
+          employee:
+            <<: *person_anchor
+            department: Sales
+      tags:
+        - merge_keys
+
+    - name: "Accessing Merged Keys Values"
+      ansible.builtin.debug:
+        msg: "Employee Name: {{ employee.name }}, Age: {{ employee.age }}, Department: {{ employee.department }}"
+      tags:
+        - accessing_merged_keys_values
+
+
+ # Multi-line Strings Example
+# YAML supports multi-line strings for cases where a string value spans multiple lines.
+# Multi-line strings can be represented using the pipe (|) or the greater than (>) characters.
+# The pipe character preserves newlines and indentation, while the greater than character folds newlines into spaces.
+
+    - name: Define Multi-line String
+      ansible.builtin.set_fact:
+        description: |
+          YAML supports multi-line strings for cases where a string value spans multiple lines.
+          Multi-line strings can be represented using the pipe (|) or the greater than (>) characters.
+          They are often used for descriptions, documentation, or other lengthy text blocks.
+
+      tags:
+        - multi_line_strings
+
+    - name: "Accessing Multi-line String Value"
+      ansible.builtin.debug:
+        msg: "Description: {{ description }}"
+      tags:
+        - accessing_multi_line_string_value
+
+# Flow Style vs. Block Style Example
+# YAML provides two styles for representing data: flow style and block style.
+# Flow style is more compact, using braces ({}) for mappings and brackets ([]) for sequences.
+# Block style uses indentation and line breaks for readability.
+
+    - name: Define Flow Style and Block Style
+      ansible.builtin.set_fact:
+        flow_style:
+          name: Alice
+          age: 25
+          city: London
+        block_style:
+          name: Bob
+          age: 30
+          city: New York
+
+    - name: "Flow Style vs. Block Style"
+      ansible.builtin.debug:
+        msg: |
+          flow_style: {name: Alice, age: 25, city: London}
+          block_style:
+            name: Bob
+            age: 30
+            city: New York
+      tags:
+        - flow_vs_block_style
+
+    - name: "Accessing Flow Style Values"
+      ansible.builtin.debug:
+        msg: |
+          Flow Style Name: {{ flow_style.name }}
+          Flow Style Age: {{ flow_style.age }}
+          Flow Style City: {{ flow_style.city }}
+      tags:
+        - accessing_flow_style_values
+
+    - name: "Accessing Block Style Values"
+      ansible.builtin.debug:
+        msg: |
+          Block Style Name: {{ block_style.name }}
+          Block Style Age: {{ block_style.age }}
+          Block Style City: {{ block_style.city }}
+      tags:
+        - accessing_block_style_values

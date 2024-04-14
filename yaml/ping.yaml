@@ -1,0 +1,9 @@
+---
+- name: ping
+  hosts: server
+  tasks:
+    - name: Example from an Ansible Playbook
+      ansible.builtin.ping:
+    - name: hello
+      ansible.builtin.shell: echo "Hello, World!"
+

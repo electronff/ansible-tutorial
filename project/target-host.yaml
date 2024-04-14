@@ -1,0 +1,31 @@
+---
+# Playbook: Create Users on Target Hosts
+
+# Description: This playbook creates multiple users on target hosts with the specified usernames.
+
+# Play-level options:
+- name: Create users on target hosts  # Name of the playbook
+  hosts: all  # Specifies the group of hosts where the tasks should run.
+  become: yes  # Allows the tasks to execute with elevated privileges using sudo.
+  vars:
+    users:  # Define a list of usernames to be created
+      - john
+      - paul
+      - george
+      - ringo
+      - brian
+      - freddie
+      - david
+      - elton
+      - mick
+
+  tasks:
+    - name: Create users  # Task to create users
+      user:  # Ansible module for managing user accounts
+        name: "{{ item }}"  # Username to create, fetched from the 'users' list
+        state: present  # Ensure the user exists
+        generate_ssh_key: yes  # Generate SSH key for the user
+        ssh_key_bits: 2048  # Specify the SSH key length
+        ssh_key_file: ".ssh/id_rsa"  # Specify the path for the SSH key file
+      loop: "{{ users }}"  # Iterate over the 'users' list to create multiple users
+

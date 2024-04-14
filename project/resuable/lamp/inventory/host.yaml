@@ -1,0 +1,79 @@
+# # This is the default Ansible 'hosts' file.
+# # Individual hosts
+# host1.example.com:
+# host2.example.com:
+
+# # Hosts belonging to the 'webservers' group
+# [webservers]
+# web1.example.com:
+# web2.example.com:
+
+# # Hosts belonging to the 'databases' group
+# [databases]
+# db1.example.com:
+# db2.example.com:
+
+# # Using Ranges
+# [webservers]
+# web[01:50].example.com
+
+# # Assigning Variables to Hosts
+# [webservers]
+# web1.example.com http_port=80 max_requests_per_child=300
+
+# # Assigning Variables to Groups
+# [webservers]
+# web1.example.com
+# web2.example.com
+
+# [webservers:vars]
+# http_port=80
+# max_requests_per_child=300
+
+# # Aliasing
+# [webservers]
+# web1 ansible_host=192.0.2.50
+
+# # Using Different Connection Parameters
+# [targets]
+# localhost              ansible_connection=local
+# other1.example.com     ansible_connection=ssh        ansible_user=myuser    ansible_ssh_pass=mypassword
+# other2.example.com     ansible_connection=ssh        ansible_user=myuser    ansible_ssh_private_key_file=/home/myuser/.ssh/id_rsa
+
+# # Children Groups
+# all:
+#   children:
+#     webservers:
+#       hosts:
+#         web1.example.com:
+#         web2.example.com:
+#     databases:
+#       hosts:
+#         db1.example.com:
+#         db2.example.com:
+#     usa:
+#       children:
+#         east_coast:
+#           hosts:
+#             host1.example.com:
+#             host2.example.com:
+#         west_coast:
+#           hosts:
+#             host3.example.com:
+#             host4.example.com:
+
+
+
+all:
+  hosts:
+    tomcat:
+      ansible_ssh_pass: 123456
+      ansible_ssh_user: dev
+      # ansible_python_interpreter: /usr/bin/python3  # Example Python 3 interpreter path
+    webserver:
+      ansible_ssh_pass: 123456
+      ansible_ssh_user: tech
+      # ansible_python_interpreter: /usr/bin/python3  # Example Python 3 interpreter path
+
+
+# ansible-playbook -i host.yaml nginx.yaml --ask-become-pass

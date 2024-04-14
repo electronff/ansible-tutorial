@@ -1,0 +1,26 @@
+---
+- name: display person information
+  hosts: server
+  tasks:
+    - name: Display person info
+      ansible.builtin.debug:
+        msg: |
+          Name: "{{ person.name }}"
+          Age:  "{{ person.age }}"
+          Email: "{{ person.email }}"
+          Student: "{{ person.isStudent }}"
+      vars:
+        person:
+          name: "John Doe"  # The name of the person
+          age: 30  # The age of the person
+          email: 'john@example.com'  # The email address of the person
+          isStudent: true  # Indicates whether the person is a student or not
+
+
+# name: "John Doe": This key-value pair assigns the name "John Doe" to the person. The name key holds the name of the person, in this case, "John Doe".
+
+# age: 30: This key-value pair assigns the age 30 to the person. The age key holds the age of the person, in this case, 30.
+
+# email: 'john@example.com': This key-value pair assigns the email address 'john@example.com' to the person. The email key holds the email address of the person, in this case, 'john@example.com'.
+
+# isStudent: true: This key-value pair assigns the boolean value true to the isStudent key, indicating that the person is a student. The isStudent key indicates whether the person is a student or not. In this case, it's true, indicating the person is indeed a student.

@@ -1,0 +1,147 @@
+---
+# Playbook Name: Conditional Statements Example
+# Description: Demonstrates various conditional statements in Ansible
+# Author: [ devopclinics]
+# Date: [@today]
+
+
+# Gather facts about all hosts
+- name: Conditional Statements Example
+  hosts: all
+  become_user: root
+  
+  # Gather facts at the beginning of the playbook execution
+  gather_facts: yes
+  
+  tasks:
+    # 1. Simple condition with when
+    - name: Install nginx only on Ubuntu servers
+      apt:
+        name: nginx
+        state: present
+      # Condition: Only execute if the target machine's OS family is Debian
+      when: ansible_facts['os_family'] == "Debian"
+      register: nginx_install_result
+    
+    # Output message if Nginx is installed successfully
+    - debug:
+        msg: "Nginx installed successfully"
+      when: nginx_install_result.changed
+
+    # 2. Using AND & OR in conditions
+    - name: Shutdown CentOS 6.x and Ubuntu 16.04 systems
+      command: /sbin/shutdown -t now
+      # Condition: Execute on CentOS 6.x or Ubuntu 16.04 systems
+      when: (ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version'] == "6") or
+            (ansible_facts['os_family'] == "Debian" and ansible_facts['distribution_major_version'] == "16")
+      register: shutdown_result
+    
+    # Output message if shutdown command is executed successfully
+    - debug:
+        msg: "System shutdown command executed"
+      when: shutdown_result.changed
+
+    # 3. Using not in conditions
+    - name: This will not run on CentOS
+      command: echo "This is not CentOS"
+      # Condition: Execute if the OS is not CentOS
+      when: not ansible_facts['os_family'] == "RedHat"
+      register: not_centos_result
+    
+    # Output message if command is executed because the OS is not CentOS
+    - debug:
+        msg: "Command executed because the OS is not CentOS"
+      when: not_centos_result.changed
+
+    # 4. Checking if a variable is defined
+    - name: Run when the variable 'my_var' is defined
+      command: echo "my_var is defined"
+      # Condition: Execute if variable 'my_var' is defined
+      when: my_var is defined
+      register: var_defined_result
+    
+    # Output message if variable 'my_var' is defined
+    - debug:
+        msg: "Variable 'my_var' is defined"
+      when: var_defined_result.changed
+
+    # 5. Using conditions with loops
+    - name: Install packages
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - tree
+        - finger
+        - vim
+      # Condition: Only execute if the target machine's OS family is Debian
+      when: ansible_facts['os_family'] == "Debian"
+      register: packages_install_result
+      become: yes
+    
+    # Output message if packages are installed successfully
+    - debug:
+        msg: "Packages installed successfully"
+      when: packages_install_result.changed
+
+    
+    # 6. Check if a file exists
+    - name: Check if a file exists
+      stat:
+        path: "/path/to/file"
+      register: file_check_result
+    
+    # Output message if the file exists
+    - debug:
+        msg: "File exists"
+      when: file_check_result.stat.exists
+
+    # 7. Check if a service is running
+    - name: Check if a service is running
+      service_facts:
+      register: service_facts_result
+      become: yes
+    
+    - name: Gather service facts
+      ansible.builtin.service_facts:
+
+
+    # # Output message if the service is running
+    # - debug:
+    #     msg: "Service is running"
+    #   when: "'finger' in service_facts_result.services"
+
+    # 8. Check if a package is installed
+    - name: Check if a package is installed
+      package_facts:
+      register: package_facts_result
+
+    # # Output message if the package is installed
+    # - debug:
+    #     msg: "Package is installed"
+    #   when: "'service' in package_facts_result.packages"
+
+    # 9. Check if a directory is empty
+    - name: Check if a directory is empty
+      find:
+        paths: "/tmp/"
+        file_type: directory
+      register: directory_check_result
+
+    # Output message if the directory is empty
+    - debug:
+        msg: "Directory is empty"
+      when: directory_check_result.matched == 0
+
+    # 10. Check if a file is writable
+    - name: Check if a file is writable
+      stat:
+        path: "/tmp/"
+      register: file_writable_result
+
+    # Output message if the file is writable
+    - debug:
+        msg: "File is writable"
+      when: file_writable_result.stat.writable
+
+      

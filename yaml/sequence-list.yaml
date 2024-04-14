@@ -1,0 +1,50 @@
+
+# - name: display person information
+#   hosts: server
+#   tasks:
+#     - name: Display person info
+#       ansible.builtin.debug:
+#         msg: |
+#           Fruits: "{{ item }}"  # Display the value of each fruit item
+#       loop: "{{ fruits }}"  # Loop through the 'fruits' variable
+#       vars:  
+# # sequence example in YAML
+#         fruits:  # Define the 'fruits' variable
+#           - apple  # First fruit is apple
+#           - banana  # Second fruit is banana
+#           - orange  # Third fruit is orange
+#         # In the above example, we have a sequence named fruits with three items: apple, banana, and orange. 
+#         # The hyphen before each item denotes that it belongs to the sequence.
+#  # Nesting Sequences:
+#         # Sequences can be nested within other sequences to create more complex structures. 
+#         # Each nested sequence is indented further than its parent. Let's see an example:
+#           - fruits:
+#               - apple
+#               - banana
+#           - vegetables:
+#               - carrot
+#               - spinach
+
+#  # Accessing Sequence Elements Example
+#         # fruits:
+#         #   - apple
+#         #   - banana
+#         #   - orange
+#         # To access the second element (banana) in the fruits sequence, you would use fruits[1].
+#         # Remember that indexing starts from 0, so the second element has an index of 1.
+
+- name: Accessing each fruit individually
+  hosts: server
+  tasks:
+    - name: Set fruits variable
+      ansible.builtin.set_fact:
+        fruits:
+          - apple
+          - banana
+          - orang
+    - name: Display individual fruits
+      ansible.builtin.debug:
+        msg: |
+          First fruit: "{{ fruits[0] }}"  # Accessing the first fruit
+          Second fruit: "{{ fruits[1] }}"  # Accessing the second fruit
+          Third fruit: "{{ fruits[2] }}"  # Accessing the third fruit

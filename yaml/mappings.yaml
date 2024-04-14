@@ -1,0 +1,94 @@
+- name:  Mappings and Key-Value Pairs
+  hosts: localhost
+  connection: local
+  gather_facts: no
+
+  tasks:
+    - name: Set person variable
+      ansible.builtin.set_fact:
+        person:
+          name:
+            first: John
+            last: Doe
+          age: 30
+          email: john@example.com
+
+    - name: "Creating Mappings"
+      ansible.builtin.debug:
+        msg: |
+          # Mappings Example
+          # In YAML, mappings consist of key-value pairs separated by a colon (:).
+          # Each key-value pair is defined on a new line, and the key is followed by a colon.
+          # The value associated with each key can be a string, a number, or even another mapping.
+          person:
+            name: John Doe
+            age: 30
+            email: john@example.com
+      tags:
+        - creating_mappings
+
+    - name: "Nesting Mappings"
+      ansible.builtin.debug:
+        msg: |
+          # Nested Mappings Example
+          # Mappings can be nested within other mappings to create hierarchical structures.
+          # Each nested mapping is indented further than its parent.
+          person:
+            name:
+              first: John
+              last: Doe
+            age: 30
+      tags:
+        - nesting_mappings
+
+    - name: "Accessing Values in a Mapping"
+      ansible.builtin.debug:
+        msg: |
+          # Accessing Mapping Values Example
+          # To access values in a mapping, you can use dot notation or bracket notation.
+          # Dot notation is used when the key doesn't contain special characters,
+          # while bracket notation is used when the key includes special characters or spaces.
+          person:
+            name:
+              first: John
+              last: Doe
+            age: 30
+          # To access the value "John" in the name mapping, you can use person.name.first.
+          # Similarly, to access the value 30, you can use person.age.
+          Accessing name using dot notation: "{{ person.name.first }} {{ person.name.last }}"
+          Accessing age using bracket notation: "{{ person['age'] }}"
+      tags:
+        - accessing_values
+
+    - name: "Accessing Name Values"
+      ansible.builtin.debug:
+        msg: "Accessing name values: {{ person.name.first }} {{ person.name.last }}"
+      tags:
+        - accessing_name_values
+
+    - name: "Accessing Age Value"
+      ansible.builtin.debug:
+        msg: "Accessing age value: {{ person['age'] }}"
+      tags:
+        - accessing_age_value
+
+    - name: "Accessing Email Value"
+      ansible.builtin.debug:
+        msg: "Accessing email value: {{ person.email }}"
+      tags:
+        - accessing_email_value
+
+    - name: "Adding Comments to Mappings"
+      ansible.builtin.debug:
+        msg: |
+          # Comments in Mappings Example
+          # Comments can be added to individual key-value pairs within a mapping,
+          # providing additional information or explanations.
+          # Comments are added using the hash symbol (#) and can be placed at the end of a line or on a separate line.
+          person:
+            name: John Doe  # Full name of the person
+            age: 30  # Current age
+          # In the above example, comments are added to each key-value pair,
+          # providing additional details about each attribute.
+      tags:
+        - adding_comments

@@ -1,0 +1,25 @@
+---
+- name: Install Nginx on web servers
+  hosts: tomcat
+  become: yes
+  become_user: root
+  gather_facts: no
+  vars:
+    package_name: nginx
+  tasks:
+    - name: Update package index
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Install Nginx
+      ansible.builtin.apt:
+        name: "{{ package_name }}"
+        state: present
+
+    - name: Start Nginx service
+      ansible.builtin.systemd:
+        name: "{{ package_name }}"
+        state: started
+        enabled: yes
+
+

@@ -1,0 +1,19 @@
+---
+# Playbook: Customize Nginx Configuration
+
+# Description: This playbook customizes the Nginx configuration file on target webservers by updating the worker_processes value based on the number of CPU cores.
+
+# Play-level options:
+- name: Customize Nginx configuration  # Name of the playbook
+  hosts: server  # Specifies the group of hosts where the tasks should run.
+  become: yes  # Allows the tasks to execute with elevated privileges using sudo.
+  vars:
+    nginx_config_file: /etc/nginx/nginx.conf  # Define the path to the Nginx configuration file.
+
+  tasks:
+    - name: Update worker_processes in Nginx configuration  # Task to update worker_processes value
+      ansible.builtin.lineinfile:  # Ansible module for editing lines in text files
+        path: "{{ nginx_config_file }}"  # Path to the Nginx configuration file
+        regexp: "^worker_processes"  # Regular expression to match the line starting with "worker_processes"
+        line: "worker_processes {{ ansible_processor_vcpus }}"  # Replace the line with the number of CPU cores
+

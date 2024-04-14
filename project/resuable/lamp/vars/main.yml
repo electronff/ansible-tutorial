@@ -1,0 +1,7 @@
+---
+# vars file for lamp
+apache_port: 80
+mysql_root_password: "123456"
+php_packages:
+  - php
+  - php-mysql

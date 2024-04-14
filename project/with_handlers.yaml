@@ -1,0 +1,39 @@
+---
+# Playbook to Install and Configure Nginx
+
+# hosts: server: Specifies the group of hosts where the tasks should run. Adjust the group name as needed.
+# become: true: Allows the tasks to execute with elevated privileges using sudo.
+# vars: Defines a variable nginx_port which specifies the port Nginx should listen on.
+# tasks: Contains a series of tasks to install and configure Nginx.
+# handlers: Contains a handler to restart Nginx service, triggered by the task that modifies the Nginx configuration.
+# template: Copies a Jinja2 template (nginx.conf.j2) to the destination /etc/nginx/nginx.conf, allowing dynamic configuration of Nginx.
+# notify: Triggers the "Restart Nginx" handler whenever the Nginx configuration is updated.
+
+
+# Play-level options:
+- name: Install and configure Nginx  # Name of the playbook
+  hosts: server  # Specifies the group of hosts where the tasks should run. Adjust the group name as needed.
+  become: true  # Allows the tasks to execute with elevated privileges using sudo.
+  vars:
+    nginx_port: 8081  # Define a variable to specify the port Nginx should listen on.
+  tasks:
+    - name: Update apt cache  # Task to update apt cache on Debian-based systems
+      apt:
+        update_cache: yes
+
+    - name: Install Nginx  # Task to install Nginx
+      apt:
+        name: nginx
+        state: latest
+
+    - name: Configure Nginx  # Task to configure Nginx
+      template:
+        src: nginx.conf.j2  # Jinja2 template file for Nginx configuration
+        dest: /etc/nginx/nginx.conf  # Destination path for Nginx configuration file
+      notify: Restart Nginx  # Trigger the "Restart Nginx" handler
+
+  handlers:
+    - name: Restart Nginx  # Handler to restart Nginx service
+      service:
+        name: nginx
+        state: restarted  # Restart Nginx service upon trigger

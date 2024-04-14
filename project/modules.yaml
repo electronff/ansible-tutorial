@@ -1,0 +1,77 @@
+---
+# Playbook: Common Built-in Modules Examples
+
+# Description: This playbook demonstrates the usage of common built-in Ansible modules.
+
+# Play-level options:
+- name: Common Built-in Modules Examples  # Name of the playbook
+  hosts: localhost  # Specifies the host where the tasks should run.
+  gather_facts: no  # Disable gathering facts to improve playbook execution speed.
+
+  tasks:
+    - name: Debug gathered facts
+      ansible.builtin.debug:
+        var: ansible_facts
+
+    - name: Execute a command on the target node
+      ansible.builtin.command:
+        cmd: hostname  # Command to execute
+      register: command_result  # Register the result of the command execution
+
+    - debug:
+        var: command_result
+
+    - name: Execute a shell command on the target node
+      ansible.builtin.shell:
+        cmd: ls -l /etc/hosts  # Shell command to execute
+      register: shell_result  # Register the result of the shell command execution
+
+    - debug:
+        var: shell_result
+
+    - name: Copy a file from the control node to the target node
+      ansible.builtin.copy:
+        src: nginx.yaml  # Source file on the control node
+        dest: /tmp/ # Destination path on the target node
+
+    - name: Fetch a file from the target node to the control node
+      ansible.builtin.fetch:
+        src: /tmp/nginx.yaml  # Source file on the target node
+        dest: /home/electron/Ansible/ansible-tutorial/ansible/t-file  # Destination path on the control node
+
+    - name: Copy a templated file from the control node to the target node
+      ansible.builtin.template:
+        src: nginx.yaml  # Jinja2 templated file on the control node
+        dest: /tmp/  # Destination path on the target node
+
+    # - name: Install nginx on Debian/Ubuntu
+    #   ansible.builtin.apt:
+    #     name: nginx
+    #     state: present
+    #   become: yes
+    #   when: ansible_distribution in ['Debian', 'Ubuntu']
+
+    # - name: Manage packages with yum (RHEL/CentOS)
+    #   ansible.builtin.yum:
+    #     name: httpd  # Package name
+    #     state: present  # Desired state (present, absent, latest, etc.)
+    #   become: yes  # Execute with elevated privileges
+    #   when: ansible_distribution in ['RedHat', 'CentOS']
+
+    - name: Manage systemd services on the target node
+      ansible.builtin.systemd:
+        name: nginx  # Service name
+        state: started  # Desired state (started, stopped, restarted, etc.)
+
+    - name: Manage user accounts on the target node
+      ansible.builtin.user:
+        name: johndoe  # Username
+        state: present  # Desired state (present, absent, etc.)
+      become: yes  # Execute with elevated privileges
+
+    - name: Manage group accounts on the target node
+      ansible.builtin.group:
+        name: developers  # Group name
+        state: present  # Desired state (present, absent, etc.)
+      become: yes  # Execute with elevated privileges
+

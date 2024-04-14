@@ -1,0 +1,8 @@
+- name: ping servers
+  hosts: tomcat
+  tasks:
+    # - name: ping
+    #   ansible.builtin.ping:
+
+    - name: hello
+      ansible.builtin.shell: echo "Hello, World!"

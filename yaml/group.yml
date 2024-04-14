@@ -1,0 +1,15 @@
+---
+- name: dev1
+  hosts: server
+  become: yes 
+  tasks:
+    - name: Ensure group "somegroup" exists
+      ansible.builtin.group:
+          name: admins
+          state: present
+    - name: Add the user 'james' with a bash shell, appending the group 'admins' and 'developers' to the user's groups
+      ansible.builtin.user:
+          name: james
+          shell: /bin/bash
+          groups: admins
+          append: yes
